@@ -1,65 +1,60 @@
 'use strict';
-function Node(data, left, right) {
-  this.data = data;
-  this.count = 1;
-  this.left = left;
-  this.right = right;
-  this.show = show;
-}
-
-function show() {
-  return this.data + '(' + this.count + ')';
-}
-
+var Node = require('./node');
 function BST() {
   this.root = null;
-  this.insert = insert;
-  this.countNodes = countNodes; //exercise 1
-  this.countEdges = countEdges; //exercise 2
-  this.max = findMax; //exercise 3
-  this.min = findMin; //exercise 4
-  this.inOrder = inOrder;
-  this.preOrder = preOrder;
-  this.postOrder = postOrder;
 }
 
 // exercise 1
-function countNodes(node) {
+BST.prototype.countNodes = function(node) {
+  var _this = this;
   if (node.data === null) {
     return 0;
   } else {
     if (node.left === null && node.right === null) {
       return 1;
     } else {
-      return countNodes(node.left) + countNodes(node.right) + 1;
+      return _this.countNodes(node.left) + _this.countNodes(node.right) + 1;
     }
   }
-}
+};
 
 // exercise 2 - (thanks for the help Karl G, I guess I was over thinking it.)
-function countEdges(node) {
-  return countNodes(node) - 1;
-}
+BST.prototype.countEdges = function(node) {
+  var _this = this;
+  return _this.countNodes(node) - 1;
+};
 
 // exercise 3
-function findMin(node) {
+BST.prototype.findMin = function(node) {
   //min is always last leaf node on left
   while (node.left !== null) {
     node = node.left;
   }
   return node.data;
-}
+};
 
 // exercise 4
-function findMax(node) {
+BST.prototype.findMax = function(node) {
   //max is always last leaf node on right
   while (node.right !== null) {
     node = node.right;
   }
   return node.data;
-}
+};
 
-function insert(data) {
+BST.prototype.find = function(data) {
+  var current = this.root;
+  while (current && current.data != data) {
+    if (data < current.data) {
+      current = current.left;
+    } else {
+      current = current.right;
+    }
+  }
+  return current;
+};
+
+BST.prototype.insert = function(data) {
   var n = new Node(data, null, null);
   if (this.root === null) {
     this.root = n;
@@ -87,30 +82,46 @@ function insert(data) {
       }
     }
   }
-}
+};
 
-function inOrder(node) {
+BST.prototype.inOrder = function(node) {
+  var result = '';
   if (node !== null) {
-    inOrder(node.left);
-    process.stdout.write(node.show() + ' ');
-    inOrder(node.right);
+    result += this.inOrder(node.left);
+    result += node.data + ' ';
+    result += this.inOrder(node.right);
   }
-}
+  return result;
+};
 
-function preOrder(node) {
+BST.prototype.preOrder = function(node) {
+  var result = '';
   if (node !== null) {
-    process.stdout.write(node.show() + ' ');
-    preOrder(node.left);
-    preOrder(node.right);
+    result += node.data + ' ';
+    result += this.preOrder(node.left);
+    result += this.preOrder(node.right);
   }
-}
+  return result;
+};
 
-function postOrder(node) {
+BST.prototype.postOrder = function(node) {
+  var result = '';
   if (node !== null) {
-    postOrder(node.left);
-    postOrder(node.right);
-    process.stdout.write(node.show() + ' ');
+    result += this.postOrder(node.left);
+    result += this.postOrder(node.right);
+    result += node.data + ' ';
   }
-}
+  return result;
+};
+
+BST.prototype.listWithCounts = function(node) {
+  var result = '';
+  if (node !== null) {
+    result += this.listWithCounts(node.left);
+    result += node.data + ': ' + node.count + ', ';
+    result += this.listWithCounts(node.right);
+  }
+  return result;
+};
 
 module.exports = BST;

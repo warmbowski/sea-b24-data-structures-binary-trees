@@ -1,15 +1,15 @@
 'use strict';
 var BST = require('./bst');
 
-function countWordOccurances(text) {
+var countWordOccurances = function(text) {
   var words = new BST();
   var wordArray = text.split(' ');
 
   wordArray.forEach(function(word) {
     words.insert(word);
   });
-  //console.log (words);
-  words.inOrder(words.root);
-}
+  var str = words.listWithCounts(words.root);
+  return str.substring(0, str.length - 2);
+};
 
-countWordOccurances('lorem ipsom whatever whatever hello there world');
+module.exports = countWordOccurances;
